@@ -2,45 +2,37 @@ import { useState } from "react";
 import axios from "axios";
 
 const Form = () => {
-
-     const [form, setForm] = useState({
-       name: '',
-       email: '',
-       phone: '',
-       id: 0,
-     })
+     const [name, setName] = useState('')
+     const [email, setEmail] = useState('')
+     const [phone, setPhone] = useState(0)
+     const [positionId, setPositionId] = useState(0)
      const [selectedFile, setSelectedFile] = useState(null);
 
      const onSubmitForm = async (e) => {
        e.preventDefault()
-       const url = 'http://localhost:3000/profile';
-       await axios(url, {
-         method: "POST",
-         headers: {
-           'content-type': 'application/json'
-         },
-         body: form
-       })
 
        const formData = new FormData();
-       formData.append('file', selectedFile);
-       formData.append('fileName', selectedFile.name);
-       const config = {
-         headers: {
-           'content-type': 'multipart/form-data',
-         },
-       };
-       const data = await axios.post(url, formData, config)
-       console.log(data)
-     }
+       formData.append('file', selectedFile)
+       formData.append('name', name)
+       formData.append('email', email)
+       formData.append('phone', phone.toString())
+       formData.append('positionId', positionId.toString())
 
-     const { name, email, phone, id } = form
+       try {
+         await axios.post('http://localhost:4000/post', formData, {
+           headers: { 'Content-Type': 'multipart/form-data' }
+         })
 
-     const handleTextChange = (e) => {
-       if (e.target.name === 'phone') {
-         e.target.value.toString()
+         setName('')
+         setEmail('')
+         setPhone(0)
+         setPositionId(0)
+         setSelectedFile(null)
+       } catch
+          (err) {
+         console.log(err);
        }
-       setForm({ ...form, [e.target.name]: e.target.value })
+
      }
 
      return (
@@ -55,9 +47,10 @@ const Form = () => {
                  required
                  placeholder='Enter your name'
                  value={name}
-                 onChange={handleTextChange}
+                 onChange={(e) => setName(e.target.value)}
               />
             </div>
+            <br/>
             <div>
               <label htmlFor='email'>Email</label>
               <input
@@ -67,10 +60,10 @@ const Form = () => {
                  required
                  placeholder='Enter your email'
                  value={email}
-                 onChange={handleTextChange}
+                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-
+            <br/>
             <div>
               <label htmlFor='phone'>Phone</label>
               <input
@@ -80,31 +73,36 @@ const Form = () => {
                  required
                  placeholder='Enter your phone'
                  value={phone}
-                 onChange={handleTextChange}
+                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
+            <br/>
             <div>
-              <label htmlFor='id'>ID</label>
+              <label htmlFor='positionId'>Position ID</label>
               <input
                  type='number'
-                 id='id'
-                 name='id'
+                 id='positionId'
+                 name='positionId'
                  required
                  placeholder='Enter your ID'
-                 value={id}
-                 onChange={handleTextChange}
+                 value={positionId}
+                 onChange={(e) => {
+                   setPositionId(e.target.value)
+                 }}
               />
             </div>
+            <br/>
             <div>
-              <label htmlFor='photo'>photo</label>
+              <label htmlFor='file'>photo</label>
               <input
                  type='file'
-                 id='photo'
-                 name='photo'
+                 id='file'
+                 name='file'
                  required
                  onChange={(e) => setSelectedFile(e.target.files[0])}
               />
             </div>
+            <br/>
             <div>
               <button type='submit'>Submit</button>
             </div>

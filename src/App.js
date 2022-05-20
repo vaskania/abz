@@ -1,15 +1,12 @@
-import Form from "./component/Form";
+// import Form from "./component/Form";
+import Registration from "./component/Registration";
 
 function App() {
 
-
-  const onSubmitHandler = (data) => {
-
-  }
-
   return (
      <div className="App">
-       <Form onSubmit={onSubmitHandler}/>
+       {/*<Form/>*/}
+       <Registration/>
      </div>
   );
 }
